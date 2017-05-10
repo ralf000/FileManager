@@ -3,34 +3,16 @@
 namespace app;
 
 
+use app\traits\TSingleton;
+
 class App
 {
-    /**
-     * @var null|self
-     */
-    private static $instance = null;
+    use TSingleton;
+
     /**
      * @var array Глобальные объекты приложения
      */
     private $objects = [];
-
-    /**
-     * App constructor.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * Возвращает объект типа App
-     * @return self
-     */
-    private static function init()
-    {
-        if (is_null(static::$instance))
-            static::$instance = new static;
-        return static::$instance;
-    }
 
     /**
      * @param string $objectName
