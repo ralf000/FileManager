@@ -59,12 +59,25 @@ class Request
     }
 
     /**
+     * Для нескольких файлов
+     *
      * @return array
      */
     public static function files() : array
     {
         self::init();
         return static::$properties['files'];
+    }
+
+    /**
+     * Для одиночного файла
+     * 
+     * @return array
+     */
+    public static function file() : array
+    {
+        self::init();
+        return current(static::$properties['files']);
     }
 
     /**

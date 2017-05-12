@@ -3,57 +3,107 @@
 namespace app\classes;
 
 
+use app\App;
+use app\exceptions\FileException;
+use app\helpers\Text;
 use Noodlehaus\Exception\FileNotFoundException;
 
-abstract class AFile
+abstract class AFile extends \SplObjectStorage
 {
     /**
      * @var string
      */
-    private $path = '';
+    protected $path = '';
 
     /**
      * @var string
      */
-    private $name = '';
-
-    /**
-     * @var string
-     */
-    private $directory = '';
+    protected $name = '';
 
     /**
      * @var int
      */
-    private $size = 0;
+    protected $size = 0;
 
 
-    /**
-     * AFile constructor.
-     * @param string $path
-     */
-    public function __construct(string $path)
+    public function download()
     {
-        $this->checkFile();
 
-        $this->path = $path;
-        $this->name = basename($path);
-        $this->directory = dirname($path);
-        $this->size = filesize($path);
+        // сбрасываем буфер вывода PHP, чтобы избежать переполнения памяти выделенной под скрипт
+        // если этого не сделать файл будет читаться в память полностью!
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        // заставляем браузер показать окно сохранения файла
+        header('Content-Description: File Transfer');
+        header("Content-Type: {$this->getMime()}");
+        header('Content-Disposition: attachment; filename=' . $this->getName());
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . $this->getSize());
+        // читаем файл и отправляем его пользователю
+        readfile($this->getPath());
+        exit;
     }
 
-    /**
-     * @return mixed
-     */
-    abstract public function view();
-
-    /**
-     * @throws FileNotFoundException
-     */
-    private function checkFile()
+    public function rename(string $newName) : bool
     {
-        if (!file_exists($this->path))
-            throw new FileNotFoundException("Файл {$this->path} не найден");
+        $newPath = dirname($this->path) . DIRECTORY_SEPARATOR . $newName;
+        if (rename($this->getPath(), $newPath)) {
+            $this->setPath($newPath);
+        } else {
+            FileException::renameFileFailure($this->getName());
+        }
+    }
+
+    public function remove()
+    {
+        if (!unlink($this->getPath()))
+            FileException::deleteFileFailure($this->getName());
+    }
+
+    protected function buildFile(\DirectoryIterator $file) : AFile
+    {
+        $fileName = $file->getFilename();
+        if (!$this->checkExtension($fileName))
+            FileException::invalidExtension($fileName);
+
+        if ($file->isDir()) {
+            $directory = new Directory($file->getPathname());
+            $directory->init();
+            return $directory;
+        } else {
+            $extension = $file->getExtension();
+            if (!$extension)
+                FileException::invalidExtension($fileName);
+
+            $imgExtensions = App::get('config')->get('main.imgExtensions');
+            $fileExtensions = App::get('config')->get('main.fileExtensions');
+
+            $pathName = Text::translit($file->getPathname());
+            if (in_array($extension, $imgExtensions)) {
+                return new Image($pathName);
+            } else if (in_array($extension, $fileExtensions)) {
+                return new File($pathName);
+            } else {
+                FileException::invalidExtension($fileName);
+            }
+        }
+    }
+
+    protected function checkExtension(string $fileName)
+    {
+        $extension = strtolower(ltrim(strrchr($fileName, '.'), '.'));
+        if (!$extension)
+            FileException::invalidExtension($fileName);
+        $allowExtensions = App::get('config')->get('main.allowExtensions');
+
+        if (!in_array($extension, $allowExtensions))
+            return false;
+
+        return true;
     }
 
     /**
@@ -72,27 +122,11 @@ abstract class AFile
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getDirectory() : string
-    {
-        return $this->directory;
-    }
-    
 
     /**
      * @return int
      */
     public function getSize() : int
-    {
-        return $this->size;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMime() : string
     {
         return $this->size;
     }
@@ -104,6 +138,5 @@ abstract class AFile
     {
         $this->path = $path;
     }
-    
 
 }

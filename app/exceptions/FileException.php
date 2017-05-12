@@ -26,4 +26,14 @@ class FileException extends Exception
     {
         return new self('Не удалось загрузить файл ' . $name);
     }
+
+    public static function invalidExtension(string $name) : self
+    {
+        return new self('Неверное расширение файла ' . $name);
+    }
+
+    public static function fileNameLengthExceeded(int $length) : self
+    {
+        return new self('Имя файла длиннее чем ' . $length . ' символов');
+    }
 }

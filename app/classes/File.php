@@ -3,12 +3,9 @@
 namespace app\classes;
 
 
-class File extends AFile
-{
-    private $mime = 'application/octet-stream';
+use app\exceptions\FileException;
 
-    public function view()
-    {
-        // TODO: Implement view() method.
-    }
+class File extends AFileLeaf
+{
+
 }

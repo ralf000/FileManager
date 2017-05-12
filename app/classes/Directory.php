@@ -3,7 +3,7 @@
 namespace app\classes;
 
 
-class Directory
+class Directory extends AFileComposite
 {
-    public function create(){}
+
 }

@@ -5,4 +5,9 @@ declare(strict_types = 1);
 require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/bootstrap/app.php';
 
-\app\classes\AFile::test();
+try {
+    $fileManager = new \app\classes\FileManager();
+    dump($fileManager->getFiles());
+} catch (Exception $e) {
+    dump($e);
+}
