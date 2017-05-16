@@ -13,6 +13,13 @@ class View
      * @var string шаблон приложения
      */
     private $layout = '';
+    
+    private $assetPath = '';
+
+    /**
+     * @var array данные для передачи во view
+     */
+    private $data = [];
 
 
     public function __construct()
@@ -23,6 +30,8 @@ class View
         if (empty($this->layout)) {
             $this->layout = App::get('config')->get('app.layout');
         }
+        if (empty($this->assetPath))
+            $this->assetPath = App::get('config')->get('app.assetPath');
     }
 
     /**
@@ -66,6 +75,42 @@ class View
     private function getLayoutChunks() : string
     {
         return $this->getLayoutPath() . DIRECTORY_SEPARATOR . 'chunks';
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function __set(string $name, $value)
+    {
+        if (!$this->data[$name])
+            $this->data[$name] = $value;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
+    public function __get(string $name)
+    {
+        return $this->data[$name] ?? null;
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function __isset(string $name) : bool 
+    {
+        return isset($this->data[$name]);
     }
 
 }

@@ -101,14 +101,15 @@ abstract class AFileComposite extends AFile
     /**
      * Возвращает размер всех вложенных файлов
      *
-     * @return int
+     * @param string $measures
+     * @return float
      */
-    public function getSize() : int
+    public function getSize(string $measures = 'kb') : float
     {
         $sum = 0;
         foreach ($this as $file) {
             /** @var AFile $file */
-            $sum += $file->getSize();
+            $sum += $file->getSize($measures);
         }
         return $sum;
     }

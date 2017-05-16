@@ -124,11 +124,17 @@ abstract class AFile extends \SplObjectStorage
 
 
     /**
+     * @param string $measure
      * @return int
      */
-    public function getSize() : int
+    public function getSize(string $measure = 'kb') : float
     {
-        return $this->size;
+        $size = $this->size;
+        switch ($measure) {
+            case 'kb': $size = $size / 1000; break;
+            case 'mb': $size = round($size / 1000 / 1000, 2); break;
+        }
+        return $size;
     }
 
     /**
@@ -137,6 +143,11 @@ abstract class AFile extends \SplObjectStorage
     public function setPath(string $path)
     {
         $this->path = $path;
+    }
+
+    public function getIcon()
+    {
+        return $this->icon;
     }
 
 }
