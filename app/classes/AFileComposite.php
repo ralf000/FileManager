@@ -20,7 +20,7 @@ abstract class AFileComposite extends AFile
             mkdir($path, 0777, true);
         }
         $this->path = $path;
-//        $this->name = basename($path);
+        $this->name = basename($path);
     }
 
     public function upload()
@@ -58,9 +58,7 @@ abstract class AFileComposite extends AFile
     public function remove()
     {
         foreach ($this as $file) {
-            /**
-             * @var AFile $file
-             */
+            /** @var AFile $file */
             $file->remove();
         }
         parent::remove();
@@ -83,9 +81,7 @@ abstract class AFileComposite extends AFile
     public function getFile(string $name) : AFile
     {
         foreach ($this as $file) {
-            /**
-             * @var AFile $file
-             */
+            /** @var AFile $file */
             if ($file->getName() === $name) {
                 return $file;
             }
@@ -111,9 +107,7 @@ abstract class AFileComposite extends AFile
     {
         $sum = 0;
         foreach ($this as $file) {
-            /**
-             * @var AFile $file
-             */
+            /** @var AFile $file */
             $sum += $file->getSize();
         }
         return $sum;

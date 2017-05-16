@@ -7,7 +7,6 @@ require_once __DIR__ . '/bootstrap/app.php';
 
 try {
     $fileManager = new \app\classes\FileManager();
-    dump($fileManager->getFiles());
 } catch (Exception $e) {
-    dump($e);
+    dd($e);
 }
