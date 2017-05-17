@@ -9,16 +9,29 @@ use app\View;
 class FileManager extends AFileComposite
 {
     /**
-     * @var string
+     * @var string путь по рабочей директории
      */
     private $basePath = '';
 
-    public function __construct()
+    public function __construct($path = '')
+    {
+        $this->initBasePath();
+        if (empty($path)){
+            $path = $this->basePath;
+        }
+        parent::__construct($path);
+    }
+
+    /**
+     * Получает путь до рабочей директории приложения
+     * Создает рабочую директорию если та не существует
+     */
+    private function initBasePath()
     {
         $this->basePath = App::get('config')->get('main.basePath');
-        parent::__construct($this->basePath);
-
-        $this->init();
+        if (!file_exists($this->basePath)) {
+            mkdir($this->basePath, 0777, true);
+        }
     }
 
 }

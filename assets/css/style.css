@@ -1,3 +1,36 @@
-.panel-file .panel-body .glyphicon{
+.panel.main .panel-heading > * {
+    float: left;
+}
+
+.panel.main .panel-heading {
+    min-height: 40px;
+}
+
+.panel.main .icons {
+    border-left: 1px solid white;
+    margin-left: 10px;
+}
+
+.panel.main .top-icon {
+    margin-left: 10px;
+}
+
+.panel.main .top-icon.back {
+    transform: rotate(180deg);
+}
+
+.panel-file .panel-body .glyphicon {
     font-size: 40px;
+}
+
+.glyphicon-folder-open{
+    color: #ffdb4d;
+}
+
+.glyphicon-file{
+    color: grey;
+}
+
+.glyphicon-picture{
+    color: #337ab7;
 }

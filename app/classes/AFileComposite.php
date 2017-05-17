@@ -16,9 +16,6 @@ abstract class AFileComposite extends AFile
      */
     public function __construct(string $path)
     {
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
         $this->path = $path;
         $this->name = basename($path);
     }
@@ -64,8 +61,9 @@ abstract class AFileComposite extends AFile
         parent::remove();
     }
 
-    protected function init()
+    public function initFiles()
     {
+        $this->removeAll($this);
         foreach (new \DirectoryIterator($this->path) as $file) {
             if ($file->isDot()) continue;
 

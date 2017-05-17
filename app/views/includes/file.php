@@ -4,7 +4,8 @@
         <span class="panel-title"><?= $file->getName() ?></span>
     </div>
     <div class="panel-body">
-        <span class="glyphicon <?= $file->getIcon() ?>"></span>
+        <a href="?file=<?= htmlspecialchars($file->getPath()) ?>"><span
+                class="glyphicon <?= htmlspecialchars($file->getIcon()) ?>"></span></a>
     </div>
     <div class="panel-footer"><?= $file->getSize('mb') . ' Мб' ?></div>
 </div>

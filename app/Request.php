@@ -17,10 +17,10 @@ class Request
     /**
      * @return bool|void
      */
-    private static function init()
+    private static function initRequestVars()
     {
         self::init();
-        
+
         if (!isset($_SERVER['REQUEST_METHOD'])) return false;
 
         self::$properties = [
@@ -36,16 +36,20 @@ class Request
      */
     public static function post() : array
     {
-        self::init();
+        self::initRequestVars();
         return static::$properties['post'];
     }
 
     /**
-     * @return array
+     * @param string $name
+     * @return mixed
      */
-    public static function get()  : array
+    public static function get(string $name = '')
     {
-        self::init();
+        self::initRequestVars();
+        if (!empty($name)){
+            return static::$properties['get'][$name] ?? null;
+        }
         return static::$properties['get'];
     }
 
@@ -54,7 +58,7 @@ class Request
      */
     public static function server() : array
     {
-        self::init();
+        self::initRequestVars();
         return static::$properties['server'];
     }
 
@@ -65,7 +69,7 @@ class Request
      */
     public static function files() : array
     {
-        self::init();
+        self::initRequestVars();
         return static::$properties['files'];
     }
 
@@ -76,7 +80,7 @@ class Request
      */
     public static function file() : array
     {
-        self::init();
+        self::initRequestVars();
         return current(static::$properties['files']);
     }
 
@@ -103,7 +107,7 @@ class Request
      */
     function getProperty(string $key, string $type)
     {
-        self::init();
+        self::initRequestVars();
         if (isset(static::$properties[$type][$key]))
             return static::$properties[$type][$key];
         return null;
@@ -116,7 +120,7 @@ class Request
      */
     function setProperty(string $key, $val, string $type)
     {
-        self::init();
+        self::initRequestVars();
         static::$properties[$type][$key] = $val;
     }
 

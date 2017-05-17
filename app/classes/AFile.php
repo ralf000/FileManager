@@ -28,24 +28,14 @@ abstract class AFile extends \SplObjectStorage
 
     public function download()
     {
-
-        // сбрасываем буфер вывода PHP, чтобы избежать переполнения памяти выделенной под скрипт
-        // если этого не сделать файл будет читаться в память полностью!
-        if (ob_get_level()) {
-            ob_end_clean();
+        if (file_exists($this->path)) {
+            header('X-SendFile: ' . realpath($this->path));
+            header('Content-Type: ' . mime_content_type($this->path));
+            header('Content-Disposition: attachment; filename=' . basename($this->path));
+            exit;
+        } else {
+            //TODO 404 error redirect
         }
-        // заставляем браузер показать окно сохранения файла
-        header('Content-Description: File Transfer');
-        header("Content-Type: {$this->getMime()}");
-        header('Content-Disposition: attachment; filename=' . $this->getName());
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . $this->getSize());
-        // читаем файл и отправляем его пользователю
-        readfile($this->getPath());
-        exit;
     }
 
     public function rename(string $newName) : bool
@@ -64,6 +54,13 @@ abstract class AFile extends \SplObjectStorage
             FileException::deleteFileFailure($this->getName());
     }
 
+    public function isDir() : bool
+    {
+        $extension = pathinfo($this->path, PATHINFO_EXTENSION);
+        return ($extension == false);
+    }
+
+
     protected function buildFile(\DirectoryIterator $file) : AFile
     {
         $fileName = $file->getFilename();
@@ -72,7 +69,7 @@ abstract class AFile extends \SplObjectStorage
 
         if ($file->isDir()) {
             $directory = new Directory($file->getPathname());
-            $directory->init();
+            $directory->initFiles();
             return $directory;
         } else {
             $extension = $file->getExtension();
@@ -106,6 +103,7 @@ abstract class AFile extends \SplObjectStorage
         return true;
     }
 
+
     /**
      * @return string
      */
@@ -125,14 +123,18 @@ abstract class AFile extends \SplObjectStorage
 
     /**
      * @param string $measure
-     * @return int
+     * @return float
      */
     public function getSize(string $measure = 'kb') : float
     {
         $size = $this->size;
         switch ($measure) {
-            case 'kb': $size = $size / 1000; break;
-            case 'mb': $size = round($size / 1000 / 1000, 2); break;
+            case 'kb':
+                $size = $size / 1000;
+                break;
+            case 'mb':
+                $size = round($size / 1000 / 1000, 2);
+                break;
         }
         return $size;
     }
