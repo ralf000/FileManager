@@ -12,12 +12,12 @@
         </div>
     </div>
     <div class="panel-body">
-        <?php $files = array_chunk($this->files, 12) ?>
+        <?php $files = array_chunk($this->files, 6) ?>
         <?php if (isset($files) && is_array($files)): ?>
             <?php foreach ($files as $filesGroup): ?>
                 <div class="row">
                     <?php foreach ($filesGroup as $file): ?>
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <?php require 'includes/file.php' ?>
                         </div>
                     <?php endforeach; ?>
@@ -29,3 +29,5 @@
     </div>
     <div class="panel-footer">Panel footer</div>
 </div>
+
+<script src="/assets/js/main.js" type="application/javascript" ></script>

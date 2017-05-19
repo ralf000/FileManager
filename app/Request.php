@@ -32,11 +32,15 @@ class Request
     }
 
     /**
+     * @param string $name
      * @return array
      */
-    public static function post() : array
+    public static function post(string $name = '') : array
     {
         self::initRequestVars();
+        if (!empty($name)){
+            return static::$properties['post'][$name] ?? null;
+        }
         return static::$properties['post'];
     }
 

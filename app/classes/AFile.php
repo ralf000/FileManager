@@ -54,14 +54,16 @@ abstract class AFile extends \SplObjectStorage
             FileException::deleteFileFailure($this->getName());
     }
 
-    public function isDir() : bool
+    public function isDir(string $path = '') : bool
     {
-        $extension = pathinfo($this->path, PATHINFO_EXTENSION);
+        if (!$path)
+            $path = $this->path;
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
         return ($extension == false);
     }
 
 
-    protected function buildFile(\DirectoryIterator $file) : AFile
+    protected function buildFile(\SplFileInfo $file) : AFile
     {
         $fileName = $file->getFilename();
         if (!$this->checkExtension($fileName))
@@ -103,6 +105,23 @@ abstract class AFile extends \SplObjectStorage
         return true;
     }
 
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function getFileName(string $path) : string
+    {
+        return pathinfo($path, PATHINFO_FILENAME);
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function getExtension(string $path) : string
+    {
+        return pathinfo($path, PATHINFO_EXTENSION);
+    }
 
     /**
      * @return string

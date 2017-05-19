@@ -1,4 +1,4 @@
-.panel.main .panel-heading > * {
+.panel-heading > * {
     float: left;
 }
 
@@ -19,18 +19,34 @@
     transform: rotate(180deg);
 }
 
+.panel-file .panel-body .icon a:hover, .panel-file .panel-body .icon a:active {
+    text-decoration: none;
+}
+
 .panel-file .panel-body .glyphicon {
     font-size: 40px;
 }
 
-.glyphicon-folder-open{
+.glyphicon-folder-open {
     color: #ffdb4d;
 }
 
-.glyphicon-file{
+.glyphicon-file {
     color: grey;
 }
 
-.glyphicon-picture{
+.glyphicon-picture {
     color: #337ab7;
+}
+
+.file-name-input input {
+    width: 70%;
+    float: left;
+    margin-right: 5px;
+    position: relative;
+    bottom: 5px;
+}
+
+.save-file-name{
+    display: none;
 }

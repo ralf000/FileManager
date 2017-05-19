@@ -25,6 +25,8 @@ class FileManagerController
         if (is_null($this->fileManager))
             $this->fileManager = new FileManager();
 
+        $this->handleRequest();
+
         $this->init();
     }
 
@@ -40,8 +42,14 @@ class FileManagerController
     {
         $path = Request::get('file');
         $path = filter_var($path, FILTER_SANITIZE_STRING);
+        $path = $this->handlePath($path);
+        $basePath = App::get('config')->get('main.basePath');
+
         if ($path) {
-            if ($path !== App::get('config')->get('main.basePath')) {
+            if (mb_strpos($path, $basePath) === false)
+                return;
+
+            if ($path !== $basePath) {
                 $this->view->backLink = $this->getBackLink($path);
             }
             $this->fileManager->setPath($path);
@@ -53,11 +61,32 @@ class FileManagerController
         }
     }
 
-    private function getBackLink(string $path) : string
+    private function handleRequest()
+    {
+        if (Request::isPost()) {
+            $command = Request::post('command');
+            if (isset($command) && $command === 'file-rename'){
+                $path = Request::post('path');
+                $newName = Request::post('newName');
+                if (!$path || !$newName) return false;
+                $file = (is_dir($path)) ? new Directory($path) : new File($path);
+                $file->rename($newName);
+            }
+            return true;
+        }
+    }
+
+    private function handlePath(string $path) : string
     {
         $path = trim($path, '/\\');
         $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         $path = str_replace('\\', DIRECTORY_SEPARATOR, $path);
+
+        return $path;
+    }
+
+    private function getBackLink(string $path) : string
+    {
         $path = mb_substr($path, 0, mb_strrpos($path, DIRECTORY_SEPARATOR));
         return $path;
     }
