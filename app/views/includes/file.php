@@ -3,12 +3,12 @@
     <div class="panel-heading">
         <span class="panel-title">
             <span class="file-name">
-                <?= $file->getName() ?>
+                <?= $file->getBasename() ?>
             </span>
             <form class="edit-file-name-form" action="/" method="post" style="display: none;">
                 <span class="file-name-input">
-                    <input type="hidden" name="path" value="<?= $file->getPath() ?>">
-                    <input type="text" name="name" value="<?= $file->getName() ?>">
+                    <input type="hidden" name="path" value="<?= $file->getPathname() ?>">
+                    <input type="text" name="name" value="<?= $file->getBasename() ?>">
                 </span>
             </form>
             <span class="file-icons">
@@ -19,9 +19,9 @@
     </div>
     <div class="panel-body">
         <div class="icon">
-            <a class="center-block" href="?file=<?= htmlspecialchars($file->getPath()) ?>"><span
+            <a class="center-block" href="?path=<?= htmlspecialchars($file->getPathname()) ?>"><span
                     class="glyphicon <?= htmlspecialchars($file->getIcon()) ?> center-block"></span></a>
         </div>
     </div>
-    <div class="panel-footer"><?= $file->getSize('mb') . ' Мб' ?></div>
+    <div class="panel-footer"><?= $file->getSize() . ' Мб' ?></div>
 </div>

@@ -29,6 +29,7 @@ class FileManager extends AFileComposite
     private function initBasePath()
     {
         $this->basePath = App::get('config')->get('main.basePath');
+//        $this->basePath = realpath($basePath);
         if (!file_exists($this->basePath)) {
             mkdir($this->basePath, 0777, true);
         }

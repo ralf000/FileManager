@@ -19,7 +19,11 @@
     transform: rotate(180deg);
 }
 
-.panel-file .panel-body .icon a:hover, .panel-file .panel-body .icon a:active {
+.panel-file .panel-body .icon a:hover,
+.panel-file .panel-body .icon a:active,
+.panel-file .panel-body .icon a:visited,
+.panel-file .panel-body .icon a:link
+{
     text-decoration: none;
 }
 

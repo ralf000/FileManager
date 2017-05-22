@@ -10,14 +10,20 @@ use app\Request;
 abstract class AFileComposite extends AFile
 {
 
-    /**
-     * AFile constructor.
-     * @param string $path
-     */
-    public function __construct(string $path)
+    protected $files = [];
+
+
+    protected function addFile(\SplFileInfo $file)
     {
-        $this->path = $path;
-        $this->name = basename($path);
+        if (!in_array($file, $this->files, true))
+            $this->files[] = $file;
+    }
+
+    protected function removeFile(\SplFileInfo $file)
+    {
+        $this->files = array_udiff($this->files, [$file], function ($a, $b) {
+            return $a <=> $b;
+        });
     }
 
     public function upload()
@@ -54,7 +60,7 @@ abstract class AFileComposite extends AFile
 
     public function remove()
     {
-        foreach ($this as $file) {
+        foreach ($this->files as $file) {
             /** @var AFile $file */
             $file->remove();
         }
@@ -63,54 +69,35 @@ abstract class AFileComposite extends AFile
 
     public function initFiles()
     {
-        $this->removeAll($this);
-        foreach (new \DirectoryIterator($this->path) as $file) {
+        foreach (new \DirectoryIterator($this->getPathname()) as $file) {
             if ($file->isDot()) continue;
 
-            $file = $this->buildFile($file);
-            $this->attach($file);
+            $file = static::buildFile($file);
+            $this->addFile($file);
         }
     }
 
     /**
-     * @param string $name
-     * @return AFile
+     * @return array
      */
-    public function getFile(string $name) : AFile
-    {
-        foreach ($this as $file) {
-            /** @var AFile $file */
-            if ($file->getName() === $name) {
-                return $file;
-            }
-        }
-        return null;
-    }
-
     public function getFiles()
     {
-        $files = [];
-        foreach ($this as $file) {
-            $files[] = $file;
-        }
-        return $files;
+        return $this->files;
     }
 
     /**
      * Возвращает размер всех вложенных файлов
      *
-     * @param string $measures
-     * @return float
+     * @return int
      */
-    public function getSize(string $measures = 'kb') : float
+    public function getSize() : int
     {
         $sum = 0;
-        foreach ($this as $file) {
+        foreach ($this->files as $file) {
             /** @var AFile $file */
-            $sum += $file->getSize($measures);
+            $sum += $file->getSize();
         }
         return $sum;
     }
-
 
 }

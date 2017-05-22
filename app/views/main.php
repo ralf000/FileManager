@@ -4,7 +4,7 @@
         <div class="icons">
             <?php if (isset($this->backLink)): ?>
                 <div class="top-icon back">
-                    <a href="?file=<?= htmlspecialchars($this->backLink) ?>" class="btn btn-default btn-xs">
+                    <a href="?path=<?= htmlspecialchars($this->backLink) ?>" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-share-alt"></span>
                     </a>
                 </div>
