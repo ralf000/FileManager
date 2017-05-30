@@ -78,6 +78,9 @@ abstract class AFile extends \SplFileInfo
 
     public function getFileNameWithoutExt() : string
     {
+        if ($this->isDir()){
+            return $this->getBasename();
+        }
         $extPos = mb_strrpos($this->getBasename(), '.');
         return mb_substr($this->getBasename(), 0, $extPos);
     }

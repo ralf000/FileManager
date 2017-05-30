@@ -45,12 +45,10 @@ class FileManagerController
         if (Request::isPost()) {
             $command = Request::post('command');
             if (isset($command) && $command === 'file-rename') {
-                $path = filter_var(Request::post('path'), FILTER_SANITIZE_STRING);
-//                $id = filter_var(Request::post('id'), FILTER_SANITIZE_NUMBER_INT);
+                $id = filter_var(Request::post('id'), FILTER_SANITIZE_NUMBER_INT);
                 $newName = filter_var(Request::post('newName'), FILTER_SANITIZE_STRING);
-                if (!$path || !$newName) return false;
-//                $file = FileManager::buildFile(new \SplFileInfo($path));
-                $file = $this->fileManager->getFile($path);
+                if (!$id || !$newName) return false;
+                $file = $this->fileManager->getFile($id);
                 $file->rename($newName);
             }
             return true;

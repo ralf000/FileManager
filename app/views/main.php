@@ -12,11 +12,11 @@
         </div>
     </div>
     <div class="panel-body">
-        <?php $files = array_chunk($this->files, 6) ?>
+        <?php $files = array_chunk($this->files, 6, true) ?>
         <?php if (isset($files) && is_array($files)): ?>
             <?php foreach ($files as $filesGroup): ?>
                 <div class="row">
-                    <?php foreach ($filesGroup as $file): ?>
+                    <?php foreach ($filesGroup as $id => $file): ?>
                         <div class="col-sm-2">
                             <?php require 'includes/file.php' ?>
                         </div>

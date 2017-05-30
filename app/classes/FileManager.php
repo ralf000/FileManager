@@ -55,10 +55,6 @@ class FileManager extends AFileComposite
         } else {
             $this->path = $this->basePath;
         }
-
-        /*if ($path !== $this->basePath) {
-            $this->view->backLink = $this->getBackLink($path);
-        }*/
     }
 
     private function handlePath(string $path) : string
@@ -85,7 +81,7 @@ class FileManager extends AFileComposite
 
     private function initBackLink()
     {
-        if ($this->path !== $this->basePath){
+        if ($this->path !== $this->basePath) {
             $backLink = mb_substr($this->path, 0, mb_strrpos($this->path, DIRECTORY_SEPARATOR));
             $this->backLink = $backLink;
         }
@@ -98,5 +94,5 @@ class FileManager extends AFileComposite
     {
         return $this->backLink;
     }
-    
+
 }

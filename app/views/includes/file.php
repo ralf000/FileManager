@@ -7,10 +7,11 @@
             </span>
             <form class="edit-file-name-form" action="/" method="post" style="display: none;">
                 <span class="file-name-input">
-                    <input type="hidden" name="path" value="<?= $file->getPathname() ?>">
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                    <input type="hidden" name="path" value="<?= \app\Request::get('path') ?>">
                     <input type="hidden" name="extension" value="<?= $file->getExtension() ?>">
                     <input type="text" name="name" value="<?= $file->getFileNameWithoutExt() ?>">
-                    .<?= $file->getExtension() ?>
+                    <?= $file->getExtension() ? '.' . $file->getExtension() : '' ?>
                 </span>
             </form>
             <span class="file-icons">
