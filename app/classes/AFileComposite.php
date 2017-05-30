@@ -85,6 +85,14 @@ abstract class AFileComposite extends AFile
         return $this->files;
     }
 
+    public function getFile(string $path)
+    {
+        if (in_array($id, $this->files)){
+            return $this->files[$id];
+        }
+        return FileException::fileNotFound();
+    }
+
     /**
      * Возвращает размер всех вложенных файлов
      *

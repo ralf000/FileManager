@@ -9,5 +9,5 @@ try {
     $fileManagerController = new \app\classes\FileManagerController();
     $fileManagerController->run();
 } catch (Exception $e) {
-    dd($e);
+    echo $e;
 }

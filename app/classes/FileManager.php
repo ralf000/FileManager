@@ -4,6 +4,7 @@ namespace app\classes;
 
 
 use app\App;
+use app\Request;
 use app\View;
 
 class FileManager extends AFileComposite
@@ -13,13 +14,61 @@ class FileManager extends AFileComposite
      */
     private $basePath = '';
 
-    public function __construct($path = '')
+    /**
+     * @var string
+     */
+    private $path = '';
+
+    /**
+     * @var string
+     */
+    private $backLink = '';
+
+    public function __construct()
     {
         $this->initBasePath();
-        if (empty($path)){
-            $path = $this->basePath;
+        $this->initCurrentPath();
+        $this->initBackLink();
+        parent::__construct($this->path);
+        $this->setFiles();
+    }
+
+    private function setFiles()
+    {
+        if ($this->isDir()) {
+            /** @var AFileComposite $file */
+            $this->initFiles();
+        } else {
+            /** @var AFileLeaf $file */
+            $this->download();
         }
-        parent::__construct($path);
+    }
+
+    private function initCurrentPath()
+    {
+        $path = Request::get('path');
+        if ($path) {
+            $path = $this->handlePath($path);
+            if (mb_strpos($path, $this->basePath) === false)
+                return;
+            $this->path = $path;
+        } else {
+            $this->path = $this->basePath;
+        }
+
+        /*if ($path !== $this->basePath) {
+            $this->view->backLink = $this->getBackLink($path);
+        }*/
+    }
+
+    private function handlePath(string $path) : string
+    {
+        $path = filter_var($path, FILTER_SANITIZE_STRING);
+        $path = trim($path, '/\\');
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        $path = str_replace('\\', DIRECTORY_SEPARATOR, $path);
+
+        return $path;
     }
 
     /**
@@ -29,10 +78,25 @@ class FileManager extends AFileComposite
     private function initBasePath()
     {
         $this->basePath = App::get('config')->get('main.basePath');
-//        $this->basePath = realpath($basePath);
         if (!file_exists($this->basePath)) {
             mkdir($this->basePath, 0777, true);
         }
     }
 
+    private function initBackLink()
+    {
+        if ($this->path !== $this->basePath){
+            $backLink = mb_substr($this->path, 0, mb_strrpos($this->path, DIRECTORY_SEPARATOR));
+            $this->backLink = $backLink;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getBackLink()
+    {
+        return $this->backLink;
+    }
+    
 }

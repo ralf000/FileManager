@@ -19,6 +19,7 @@ class FileManagerController
      */
     public $fileManager = null;
 
+    public $backLink = '';
 
 
     public function __construct()
@@ -29,54 +30,14 @@ class FileManagerController
             $this->fileManager = new FileManager();
 
         $this->handleRequest();
-
-        $this->init();
     }
 
     public function run()
     {
         $files = $this->fileManager->getFiles();
         $this->view->files = $files;
+        $this->view->backLink = $this->fileManager->getBackLink();
         $this->view->display('main');
-    }
-
-    private function init()
-    {
-        $this->initPath();
-        if ($this->fileManager->isDir()) {
-        /** @var AFileComposite $file */
-            $this->fileManager->initFiles();
-        } else {
-        /** @var AFileLeaf $file */
-            $this->fileManager->download();
-        }
-    }
-
-    private function initPath()
-    {
-        $path = Request::get('path');
-        if (!$path) return;
-
-        $path = $this->handlePath($path);
-
-        $basePath = App::get('config')->get('main.basePath');
-        if (mb_strpos($path, $basePath) === false)
-            return;
-
-        if ($path !== $basePath) {
-            $this->view->backLink = $this->getBackLink($path);
-        }
-        $this->fileManager = new FileManager($path);
-    }
-
-    private function handlePath(string $path) : string
-    {
-        $path = filter_var($path, FILTER_SANITIZE_STRING);
-        $path = trim($path, '/\\');
-        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
-        $path = str_replace('\\', DIRECTORY_SEPARATOR, $path);
-
-        return $path;
     }
 
     private function handleRequest()
@@ -84,19 +45,16 @@ class FileManagerController
         if (Request::isPost()) {
             $command = Request::post('command');
             if (isset($command) && $command === 'file-rename') {
-                $path = Request::post('path');
-                $newName = Request::post('newName');
+                $path = filter_var(Request::post('path'), FILTER_SANITIZE_STRING);
+//                $id = filter_var(Request::post('id'), FILTER_SANITIZE_NUMBER_INT);
+                $newName = filter_var(Request::post('newName'), FILTER_SANITIZE_STRING);
                 if (!$path || !$newName) return false;
-                $file = (is_dir($path)) ? new Directory($path) : new File($path);
+//                $file = FileManager::buildFile(new \SplFileInfo($path));
+                $file = $this->fileManager->getFile($path);
                 $file->rename($newName);
             }
             return true;
         }
     }
-
-    private function getBackLink(string $path) : string
-    {
-        $path = mb_substr($path, 0, mb_strrpos($path, DIRECTORY_SEPARATOR));
-        return $path;
-    }
+    
 }

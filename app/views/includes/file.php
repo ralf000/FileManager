@@ -8,7 +8,9 @@
             <form class="edit-file-name-form" action="/" method="post" style="display: none;">
                 <span class="file-name-input">
                     <input type="hidden" name="path" value="<?= $file->getPathname() ?>">
-                    <input type="text" name="name" value="<?= $file->getBasename() ?>">
+                    <input type="hidden" name="extension" value="<?= $file->getExtension() ?>">
+                    <input type="text" name="name" value="<?= $file->getFileNameWithoutExt() ?>">
+                    .<?= $file->getExtension() ?>
                 </span>
             </form>
             <span class="file-icons">
@@ -23,5 +25,5 @@
                     class="glyphicon <?= htmlspecialchars($file->getIcon()) ?> center-block"></span></a>
         </div>
     </div>
-    <div class="panel-footer"><?= $file->getSize() . ' Мб' ?></div>
+    <div class="panel-footer"><?= $file->getSize() . ' б' ?></div>
 </div>

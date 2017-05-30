@@ -23,12 +23,10 @@ abstract class AFile extends \SplFileInfo
         }
     }
 
-    public function rename(string $newName) : bool
+    public function rename(string $newName)
     {
-        $newPath = $this->getRealPath() . DIRECTORY_SEPARATOR . $newName;
-        if (rename($this->getPath(), $newPath)) {
-            $this->file = new static($newPath);
-        } else {
+        $newPath = str_replace($this->getFileNameWithoutExt(), $newName, $this->getPathname());
+        if (!rename($this->getPathname(), $newPath)) {
             FileException::renameFileFailure($this->getFilename());
         }
     }
@@ -38,7 +36,6 @@ abstract class AFile extends \SplFileInfo
         if (!unlink($this->getPath()))
             FileException::deleteFileFailure($this->getFilename());
     }
-    
 
 
     public static function buildFile(\SplFileInfo $file) : AFile
@@ -78,11 +75,16 @@ abstract class AFile extends \SplFileInfo
 
         return true;
     }
-    
+
+    public function getFileNameWithoutExt() : string
+    {
+        $extPos = mb_strrpos($this->getBasename(), '.');
+        return mb_substr($this->getBasename(), 0, $extPos);
+    }
+
 
     public function getIcon()
     {
         return $this->icon;
     }
-
 }

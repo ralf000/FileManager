@@ -36,4 +36,9 @@ class FileException extends Exception
     {
         return new self('Имя файла длиннее чем ' . $length . ' символов');
     }
+
+    public static function fileNotFound() : self
+    {
+        return new self('Файл не найден');
+    }
 }

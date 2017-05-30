@@ -35,7 +35,7 @@ class Request
      * @param string $name
      * @return array
      */
-    public static function post(string $name = '') : array
+    public static function post(string $name = '')
     {
         self::initRequestVars();
         if (!empty($name)){
