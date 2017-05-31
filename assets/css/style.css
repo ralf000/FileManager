@@ -54,3 +54,8 @@
 .save-file-name{
     display: none;
 }
+
+.delete-file{
+    font-size: 18px;
+    cursor:  pointer;
+}

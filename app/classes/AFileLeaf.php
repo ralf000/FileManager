@@ -11,12 +11,6 @@ use Noodlehaus\Exception\FileNotFoundException;
 abstract class AFileLeaf extends AFile
 {
 
-    public function remove()
-    {
-        if (!unlink($this->getPath()))
-            FileException::deleteFileFailure($this->getName());
-    }
-
     /*public function addFile(\SplFileInfo $file)
     {
         APIException::methodNotAllowed(__CLASS__, __METHOD__);

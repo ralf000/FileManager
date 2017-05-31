@@ -24,6 +24,18 @@ function addHandlers() {
         var path = form.find('input[name=path]').val();
         sendFileRenameAjax(t, id, newName, extension, path);
     });
+
+    $('.delete-file').on('click', function (e) {
+        e.preventDefault();
+        var t = $(this);
+        var form = t.closest('.panel').find('form.edit-file-name-form');
+        var id = form.find('input[name=id]').val();
+        var path = form.find('input[name=path]').val();
+        var name = form.find('input[name=name]').val();
+        if (confirm('Вы действительно хотите удалить «' + name + '»?')){
+            sendFileDeleteAjax(t, id, path);
+        }
+    });
 }
 
 function sendFileRenameAjax(t, id, newName, extension, path) {
@@ -36,7 +48,6 @@ function sendFileRenameAjax(t, id, newName, extension, path) {
             newName: newName
         },
         success: function (data) {
-            console.log(data);
             var panel = t.closest('.panel');
             var panelTitle = panel.find('.panel-title');
             panelTitle.toggle();
@@ -44,6 +55,21 @@ function sendFileRenameAjax(t, id, newName, extension, path) {
             panel.find('.file-name').empty().append(newName + extension).toggle();
             panel.find('.save-file-name').toggle();
             panelTitle.fadeToggle();
+        }
+    });
+}
+
+function sendFileDeleteAjax(t, id, path) {
+    $.ajax({
+        url: '/?path=' + path,
+        type: 'POST',
+        data: {
+            command: 'file-delete',
+            id: id
+        },
+        success: function (data) {
+            console.log(data);
+            t.closest('.panel').fadeOut();
         }
     });
 }

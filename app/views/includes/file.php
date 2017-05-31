@@ -26,5 +26,8 @@
                     class="glyphicon <?= htmlspecialchars($file->getIcon()) ?> center-block"></span></a>
         </div>
     </div>
-    <div class="panel-footer"><?= $file->getSize() . ' б' ?></div>
+    <div class="panel-footer">
+        <?= $file->getSize() . ' б' ?>
+        <span class="glyphicon glyphicon-remove pull-right delete-file"></span>
+    </div>
 </div>

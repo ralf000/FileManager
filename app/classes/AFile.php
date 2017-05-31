@@ -33,7 +33,12 @@ abstract class AFile extends \SplFileInfo
 
     public function remove()
     {
-        if (!unlink($this->getPath()))
+        if ($this->isDir()) {
+            $result = rmdir($this->getPathname());
+        } else {
+            $result = unlink($this->getPathname());
+        }
+        if (!$result)
             FileException::deleteFileFailure($this->getFilename());
     }
 
@@ -78,7 +83,7 @@ abstract class AFile extends \SplFileInfo
 
     public function getFileNameWithoutExt() : string
     {
-        if ($this->isDir()){
+        if ($this->isDir()) {
             return $this->getBasename();
         }
         $extPos = mb_strrpos($this->getBasename(), '.');
