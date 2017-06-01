@@ -41,7 +41,7 @@ class FileManager extends AFileComposite
             $this->initFiles();
         } else {
             /** @var AFileLeaf $file */
-            $this->download();
+            //$this->download();
         }
     }
 

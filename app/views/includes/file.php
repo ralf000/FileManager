@@ -24,7 +24,8 @@
     </div>
     <div class="panel-body">
         <div class="icon">
-            <a class="center-block" href="?path=<?= htmlspecialchars($file->getPathname()) ?>"><span
+            <?php $link = ($file->isDir()) ? '?path='.htmlspecialchars($file->getPathname()) : htmlspecialchars($file->getPathname()) ?>
+        <a class="center-block" href="<?= $link ?>"><span
                     class="glyphicon <?= htmlspecialchars($file->getIcon()) ?> center-block"></span></a>
         </div>
     </div>

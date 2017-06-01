@@ -4,7 +4,6 @@ namespace app\classes;
 
 
 use app\App;
-use app\exceptions\FileException;
 
 class File extends AFileLeaf
 {

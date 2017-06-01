@@ -3,7 +3,6 @@
 namespace app\classes;
 
 
-
 use app\App;
 
 class Image extends AFileLeaf

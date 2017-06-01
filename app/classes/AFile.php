@@ -11,7 +11,7 @@ use Noodlehaus\Exception\FileNotFoundException;
 abstract class AFile extends \SplFileInfo
 {
 
-    public function download()
+    /*public function download()
     {
         if (file_exists($this->getPathname())) {
             header('X-SendFile: ' . realpath($this->getRealPath()));
@@ -21,7 +21,7 @@ abstract class AFile extends \SplFileInfo
         } else {
             //TODO 404 error redirect
         }
-    }
+    }*/
 
     public function rename(string $newName)
     {
