@@ -1,4 +1,20 @@
 function addHandlers() {
+    $('input[name=name]').keyup(function (e) {
+        var parent = $(this).parent();
+        if (parent.hasClass('has-error'))
+            parent.removeClass('has-error');
+        var helpBlock = $(this).next('span.help-block');
+        if (helpBlock.length !== 0)
+            helpBlock.remove();
+        var regexp = /[а-яА-ЯёЁ]/g;
+        if (e.key.search(regexp) !== -1) {
+            var text = $(this).val().replace(regexp, '');
+            $(this).val(text);
+            parent.addClass('has-error');
+            $(this).after('<span class="help-block"><small>Допускается только латиница</small></span>');
+        }
+    });
+
     $('.edit-file-name').on('click', function (e) {
         e.preventDefault();
         var t = $(this);
@@ -32,7 +48,7 @@ function addHandlers() {
         var id = form.find('input[name=id]').val();
         var path = form.find('input[name=path]').val();
         var name = form.find('input[name=name]').val();
-        if (confirm('Вы действительно хотите удалить «' + name + '»?')){
+        if (confirm('Вы действительно хотите удалить «' + name + '»?')) {
             sendFileDeleteAjax(t, id, path);
         }
     });
@@ -48,6 +64,7 @@ function sendFileRenameAjax(t, id, newName, extension, path) {
             newName: newName
         },
         success: function (data) {
+            console.log(data);
             var panel = t.closest('.panel');
             var panelTitle = panel.find('.panel-title');
             panelTitle.toggle();
@@ -68,7 +85,6 @@ function sendFileDeleteAjax(t, id, path) {
             id: id
         },
         success: function (data) {
-            console.log(data);
             t.closest('.panel').fadeOut();
         }
     });

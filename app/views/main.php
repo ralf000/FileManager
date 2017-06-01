@@ -27,7 +27,15 @@
             <p>Файлы отсутствуют</p>
         <?php endif; ?>
     </div>
-    <div class="panel-footer">Panel footer</div>
+    <div class="panel-footer">
+        <form method="post" enctype="multipart/form-data" class="form-inline">
+            <div class="form-group">
+                <input type="hidden" name="command" value="file-upload">
+                <input type="file" name="files[]" class="form-control" multiple>
+                <input type="submit" class="btn btn-default form-control" value="Загрузить">
+            </div>
+        </form>
+    </div>
 </div>
 
-<script src="/assets/js/main.js" type="application/javascript" ></script>
+<script src="/assets/js/main.js" type="application/javascript"></script>

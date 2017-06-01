@@ -25,7 +25,9 @@ abstract class AFile extends \SplFileInfo
 
     public function rename(string $newName)
     {
-        $newPath = str_replace($this->getFileNameWithoutExt(), $newName, $this->getPathname());
+        $rpos = mb_strrpos($this->getPathname(), $this->getFileNameWithoutExt());
+        $length = mb_strlen($this->getFileNameWithoutExt());
+        $newPath = substr_replace($this->getPathname(), $newName, $rpos, $length);
         if (!rename($this->getPathname(), $newPath)) {
             FileException::renameFileFailure($this->getFilename());
         }

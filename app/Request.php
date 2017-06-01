@@ -3,6 +3,8 @@
 namespace app;
 
 
+use app\classes\FileManager;
+use app\helpers\Text;
 use app\traits\TSingleton;
 
 class Request
@@ -13,6 +15,42 @@ class Request
      * @var array
      */
     private static $properties = [];
+
+    public static function initRequest()
+    {
+        self::init();
+        self::handlePostRequest();
+    }
+
+    private static function handlePostRequest()
+    {
+        if (!self::isPost()) return;
+
+        /** @var FileManager $fileManager */
+        $fileManager = App::get('fileManager');
+        $command = self::post('command') ?? '';
+        switch ($command) {
+            case 'file-rename':
+                $id = filter_var(self::post('id'), FILTER_SANITIZE_NUMBER_INT);
+                $newName = filter_var(self::post('newName'), FILTER_SANITIZE_STRING);
+                if (preg_match('/[а-яА-ЯёЁ]/u', $newName)){
+                    $newName = Text::translit($newName);
+                }
+                if (!is_numeric($id) || !$newName) return;
+                $file = $fileManager->getFile($id);
+                $file->rename($newName);
+                break;
+            case 'file-delete':
+                $id = filter_var(self::post('id'), FILTER_SANITIZE_NUMBER_INT);
+                if (!is_numeric($id)) return;
+                $file = $fileManager->getFile($id);
+                $file->remove();
+                break;
+            case 'file-upload':
+                $fileManager->upload();
+                break;
+        }
+    }
 
     /**
      * @return bool|void
@@ -38,7 +76,7 @@ class Request
     public static function post(string $name = '')
     {
         self::initRequestVars();
-        if (!empty($name)){
+        if (!empty($name)) {
             return static::$properties['post'][$name] ?? null;
         }
         return static::$properties['post'];
@@ -51,7 +89,7 @@ class Request
     public static function get(string $name = '')
     {
         self::initRequestVars();
-        if (!empty($name)){
+        if (!empty($name)) {
             return static::$properties['get'][$name] ?? null;
         }
         return static::$properties['get'];
@@ -74,19 +112,19 @@ class Request
     public static function files() : array
     {
         self::initRequestVars();
-        return static::$properties['files'];
+        return current(static::$properties['files']);
     }
 
     /**
      * Для одиночного файла
-     * 
+     *
      * @return array
      */
-    public static function file() : array
+/*    public static function file() : array
     {
         self::initRequestVars();
         return current(static::$properties['files']);
-    }
+    }*/
 
     /**
      * @return bool

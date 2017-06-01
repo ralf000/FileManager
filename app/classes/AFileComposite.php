@@ -5,6 +5,7 @@ namespace app\classes;
 
 use app\App;
 use app\exceptions\FileException;
+use app\helpers\Text;
 use app\Request;
 
 abstract class AFileComposite extends AFile
@@ -28,34 +29,21 @@ abstract class AFileComposite extends AFile
 
     public function upload()
     {
-        $name = mb_strtolower(Request::file()['name']);
-        $tmpName = mb_strtolower(Request::file()['tmp_name']);
-        $type = mb_strtolower(Request::file()['type']);
-        $size = mb_strtolower(Request::file()['size']);
+        $path = Request::get('path') ?? App::get('config')->get('main.basePath');
+        $files = Request::files();
+        $files['name'] = array_map('mb_strtolower', $files['name']);
 
-        if (!$this->checkExtension($name))
-            FileException::invalidExtension($name);
+        $tmpFunction = function ($element) use ($path) {
+            return $path . DIRECTORY_SEPARATOR . time() . '_' . Text::translit($element);
+        };
+        $files = array_combine($files['tmp_name'], array_map($tmpFunction, $files['name']));
 
-        $maxFileSize = (int)App::get('config')->get('main.maxFileSize');
-        if ($size > $maxFileSize)
-            FileException::maxFileSizeExceeded($name);
-
-        // Проверяем загружен ли файл
-        if (!is_uploaded_file($tmpName))
-            FileException::uploadFileFailure($name);
-
-        //check double file type (image with comment)
-        if (mb_substr_count($type, '/') > 1) {
-            FileException::uploadFileFailure($name);
+        foreach ($files as $tmpName => $name) {
+            $this->checkUploadedFile($tmpName, $name);
+            // Если файл загружен успешно, перемещаем его из временной директории в конечную
+            move_uploaded_file($tmpName, $name);
         }
-
-        $maxFileName = App::get('config')->get('main.maxFileName');
-        if (mb_strlen($name) > $maxFileName)
-            FileException::fileNameLengthExceeded($maxFileSize);
-
-        $name = date('d-m-Y_H:i:s_') . $name;
-        // Если файл загружен успешно, перемещаем его из временной директории в конечную
-        move_uploaded_file($tmpName, $this->path . DIRECTORY_SEPARATOR . $name);
+        header('Location: /?path=' . $path);
     }
 
     public function remove()
@@ -103,6 +91,29 @@ abstract class AFileComposite extends AFile
             $sum += $file->getSize();
         }
         return $sum;
+    }
+
+    private function checkUploadedFile(string $tmpName, string $name)
+    {
+        if (!$this->checkExtension($name))
+            FileException::invalidExtension($name);
+
+        $maxFileSize = (int)App::get('config')->get('main.maxFileSize');
+        if (filesize($tmpName) > $maxFileSize)
+            FileException::maxFileSizeExceeded($name);
+
+        // Проверяем загружен ли файл
+        if (!is_uploaded_file($tmpName))
+            FileException::uploadFileFailure($name);
+
+        //check double file type (image with comment)
+        if (mb_substr_count(mime_content_type($tmpName), '/') > 1) {
+            FileException::uploadFileFailure($name);
+        }
+
+        $maxFileName = App::get('config')->get('main.maxFileName');
+        if (mb_strlen($name) > $maxFileName)
+            FileException::fileNameLengthExceeded($maxFileSize);
     }
 
 }
