@@ -79,4 +79,11 @@ class Text
         );
         return strtr($input, $assoc);
     }
+
+    public static function mb_strcasecmp($str1, $str2, $encoding = null) {
+        if ($encoding === null) {
+            $encoding = mb_internal_encoding();
+        }
+        return strcmp(mb_strtolower($str1, $encoding), mb_strtolower($str2, $encoding));
+    }
 }
