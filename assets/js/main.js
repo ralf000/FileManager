@@ -1,18 +1,22 @@
+function checkInput(t, e) {
+    var parent = t.parent();
+    if (parent.hasClass('has-error'))
+        parent.removeClass('has-error');
+    var helpBlock = t.next('span.help-block');
+    if (helpBlock.length !== 0)
+        helpBlock.remove();
+    var regexp = /[а-яА-ЯёЁ]/g;
+    if (e.key.search(regexp) !== -1) {
+        var text = t.val().replace(regexp, '');
+        t.val(text);
+        parent.addClass('has-error');
+        t.after('<span class="help-block"><small>Допускается только латиница</small></span>');
+    }
+}
+
 function addHandlers() {
     $('input[name=name]').keyup(function (e) {
-        var parent = $(this).parent();
-        if (parent.hasClass('has-error'))
-            parent.removeClass('has-error');
-        var helpBlock = $(this).next('span.help-block');
-        if (helpBlock.length !== 0)
-            helpBlock.remove();
-        var regexp = /[а-яА-ЯёЁ]/g;
-        if (e.key.search(regexp) !== -1) {
-            var text = $(this).val().replace(regexp, '');
-            $(this).val(text);
-            parent.addClass('has-error');
-            $(this).after('<span class="help-block"><small>Допускается только латиница</small></span>');
-        }
+        checkInput($(this), e);
     });
 
     $('.edit-file-name').on('click', function (e) {
@@ -52,6 +56,12 @@ function addHandlers() {
             sendFileDeleteAjax(t, id, path);
         }
     });
+
+    $('#create-folder').on('click', function (e) {
+        e.preventDefault();
+        var t = $(this);
+        t.next('#create-folder-form').fadeToggle();
+    });
 }
 
 function sendFileRenameAjax(t, id, newName, extension, path) {
@@ -61,6 +71,7 @@ function sendFileRenameAjax(t, id, newName, extension, path) {
         data: {
             command: 'file-rename',
             id: id,
+            extension: extension,
             newName: newName
         },
         success: function (data) {

@@ -24,13 +24,12 @@
     </div>
     <div class="panel-body">
         <div class="icon">
-            <?php $link = ($file->isDir()) ? '?path='.htmlspecialchars($file->getPathname()) : htmlspecialchars($file->getPathname()) ?>
-        <a class="center-block" href="<?= $link ?>"><span
+        <a class="center-block" href="?path=<?= htmlspecialchars($file->getPathname()) ?>"><span
                     class="glyphicon <?= htmlspecialchars($file->getIcon()) ?> center-block"></span></a>
         </div>
     </div>
     <div class="panel-footer">
-        <?= $file->getSize() . ' б' ?>
+        <?= round($file->getSize() / 1000) . ' Кб' ?>
         <span class="glyphicon glyphicon-remove pull-right delete-file"></span>
     </div>
 </div>

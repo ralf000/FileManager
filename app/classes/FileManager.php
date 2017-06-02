@@ -4,6 +4,7 @@ namespace app\classes;
 
 
 use app\App;
+use app\exceptions\FileException;
 use app\helpers\Filter;
 use app\Request;
 use app\View;
@@ -34,6 +35,50 @@ class FileManager extends AFileComposite
         $this->setFiles();
     }
 
+    public function createFolder(string $name) : bool
+    {
+        if (!$this->isDir() || !$this->includedBasePath())
+            return false;
+        $path = $this->getPathname() . DIRECTORY_SEPARATOR . $name;
+        if (!mkdir($path)) {
+            FileException::createDirFailure($this->getPathname());
+        }
+        return true;
+    }
+    
+    public function handleFileName(string $name, string $extension = '')
+    {
+        if (preg_match('/[а-яА-ЯёЁ]/u', $name)){
+            $name = Text::translit($name);
+        }
+        $name = $this->handleDoubleFileName($name, $extension);
+        return $name;
+    }
+    
+
+    /**
+     * Обрабатывает имена файлов, который дублируют уже имеющиеся в директории
+     * 
+     * @param string $name
+     * @param string $extension
+     * @return string
+     */
+    private function handleDoubleFileName(string $name, string $extension = '') : string
+    {
+        $num = 1;
+        $files = $this->getFiles();
+        foreach ($files as $file) {
+            /** @var \SplFileInfo $file */
+            if ($file->getFilename() === ($name . $extension)) {
+                if (preg_match('~\((\d+\))$~', $name, $match)) {
+                    $num = $match[1] + 1;
+                }
+                return $this->handleDoubleFileName($name . "($num)", $extension);
+            }
+        }
+        return $name;
+    }
+
     private function setFiles()
     {
         if ($this->isDir()) {
@@ -41,7 +86,7 @@ class FileManager extends AFileComposite
             $this->initFiles();
         } else {
             /** @var AFileLeaf $file */
-            //$this->download();
+            $this->download();
         }
     }
 
@@ -76,6 +121,17 @@ class FileManager extends AFileComposite
             $backLink = mb_substr($this->path, 0, mb_strrpos($this->path, DIRECTORY_SEPARATOR));
             $this->backLink = $backLink;
         }
+    }
+
+    /**
+     * Проверяет, включает ли путь файл базовый путь
+     *
+     * @return bool
+     */
+    private function includedBasePath()
+    {
+        $path = ltrim($this->getPathname(), DIRECTORY_SEPARATOR);
+        return mb_strpos($path, $this->basePath) === 0;
     }
 
     /**

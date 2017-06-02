@@ -32,11 +32,11 @@ class Request
         switch ($command) {
             case 'file-rename':
                 $id = filter_var(self::post('id'), FILTER_SANITIZE_NUMBER_INT);
+                $extension = filter_var(self::post('extension'), FILTER_SANITIZE_STRING);
                 $newName = filter_var(self::post('newName'), FILTER_SANITIZE_STRING);
-                if (preg_match('/[а-яА-ЯёЁ]/u', $newName)){
-                    $newName = Text::translit($newName);
-                }
                 if (!is_numeric($id) || !$newName) return;
+
+                $newName = $fileManager->handleFileName($newName, $extension);
                 $file = $fileManager->getFile($id);
                 $file->rename($newName);
                 break;
@@ -48,6 +48,14 @@ class Request
                 break;
             case 'file-upload':
                 $fileManager->upload();
+                break;
+            case 'folder-create':
+                $name = filter_var(self::post('name'), FILTER_SANITIZE_STRING);
+                if (!$name) return;
+
+                $name = $fileManager->handleFileName($name);
+                $fileManager->createFolder($name);
+                header('Location: ' . '/?path=' . $fileManager->getPathname());
                 break;
         }
     }

@@ -11,17 +11,18 @@ use Noodlehaus\Exception\FileNotFoundException;
 abstract class AFile extends \SplFileInfo
 {
 
-    /*public function download()
+    public function download()
     {
         if (file_exists($this->getPathname())) {
-            header('X-SendFile: ' . realpath($this->getRealPath()));
+            /*header('X-SendFile: ' . realpath($this->getRealPath()));
             header('Content-Type: ' . mime_content_type($this->getPathname()));
-            header('Content-Disposition: attachment; filename=' . basename($this->getPathname()));
+            header('Content-Disposition: attachment; filename=' . basename($this->getPathname()));*/
+            header('Location: ' . $this->getPathname());
             exit;
         } else {
-            //TODO 404 error redirect
+            
         }
-    }*/
+    }
 
     public function rename(string $newName)
     {

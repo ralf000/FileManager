@@ -41,4 +41,9 @@ class FileException extends Exception
     {
         return new self('Файл не найден');
     }
+    
+    public static function createDirFailure(string $name)
+    {
+        return new self('Не удалось создать директорию ' . $name);
+    }
 }
