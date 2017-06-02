@@ -10,7 +10,11 @@ function checkInput(t, e) {
         var text = t.val().replace(regexp, '');
         t.val(text);
         parent.addClass('has-error');
-        t.after('<span class="help-block"><small>Допускается только латиница</small></span>');
+        t.popover('show');
+        //t.after('<span class="help-block"><small>Допускается только латиница</small></span>');
+    } else {
+        t.popover('destroy');
+        parent.removeClass('has-error');
     }
 }
 
