@@ -78,7 +78,7 @@ function sendFileRenameAjax(t, id, newName, extension, path) {
             extension: extension,
             newName: newName
         },
-        success: function (data) {
+        success: function (newName) {
             var panel = t.closest('.panel');
             var panelTitle = panel.find('.panel-title');
             panelTitle.toggle();

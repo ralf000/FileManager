@@ -6,8 +6,8 @@ namespace app\classes;
 use app\App;
 use app\exceptions\FileException;
 use app\helpers\Filter;
+use app\helpers\Text;
 use app\Request;
-use app\View;
 
 class FileManager extends AFileComposite
 {

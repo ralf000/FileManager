@@ -73,3 +73,7 @@
 #create-folder-form{
     display: none;
 }
+
+.popover{
+    color: red;
+}

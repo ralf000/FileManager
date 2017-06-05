@@ -39,6 +39,7 @@ class Request
                 $newName = $fileManager->handleFileName($newName, $extension);
                 $file = $fileManager->getFile($id);
                 $file->rename($newName);
+                echo  $newName;
                 break;
             case 'file-delete':
                 $id = filter_var(self::post('id'), FILTER_SANITIZE_NUMBER_INT);
@@ -58,6 +59,7 @@ class Request
                 header('Location: ' . '/?path=' . $fileManager->getPathname());
                 break;
         }
+        exit;
     }
 
     /**
