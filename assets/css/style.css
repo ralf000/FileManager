@@ -19,11 +19,14 @@
     transform: rotate(180deg);
 }
 
+.panel-file .panel-body{
+    min-height: 80px;
+}
+
 .panel-file .panel-body .icon a:hover,
 .panel-file .panel-body .icon a:active,
 .panel-file .panel-body .icon a:visited,
-.panel-file .panel-body .icon a:link
-{
+.panel-file .panel-body .icon a:link {
     text-decoration: none;
 }
 
@@ -51,29 +54,39 @@
     bottom: 5px;
 }
 
-.save-file-name{
+.save-file-name {
     display: none;
 }
 
-.delete-file{
+.delete-file {
     font-size: 18px;
-    cursor:  pointer;
+    cursor: pointer;
 }
 
-.footer-icon{
+.footer-icon {
     font-size: 30px;
     margin-right: 10px;
     cursor: pointer;
 }
 
-.panel-footer form.form-inline{
+.panel-footer form.form-inline {
     margin-right: 10px;
 }
 
-#create-folder-form{
+#create-folder-form {
     display: none;
 }
 
-.popover{
+.popover {
     color: red;
+}
+
+.thumbnail {
+    padding: 0;
+    margin-bottom: 0;
+    height: 50px;
+}
+
+.icon{
+    display: flex;
 }

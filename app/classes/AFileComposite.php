@@ -11,7 +11,7 @@ use app\Request;
 abstract class AFileComposite extends AFile
 {
 
-    protected $files = [];
+    private $files = [];
 
 
     protected function addFile(\SplFileInfo $file)
@@ -34,14 +34,17 @@ abstract class AFileComposite extends AFile
         $files['name'] = array_map('mb_strtolower', $files['name']);
 
         $tmpFunction = function ($element) use ($path) {
-            return $path . DIRECTORY_SEPARATOR . time() . '_' . Text::translit($element);
+            $element = strip_tags(Text::translit($element));
+            return ($this->checkExtension($element)) ? $path . DIRECTORY_SEPARATOR . $element : '';
         };
         $files = array_combine($files['tmp_name'], array_map($tmpFunction, $files['name']));
 
         foreach ($files as $tmpName => $name) {
-            $this->checkUploadedFile($tmpName, $name);
-            // Если файл загружен успешно, перемещаем его из временной директории в конечную
-            move_uploaded_file($tmpName, $name);
+            if ($tmpName && $name) {
+                $this->checkUploadedFile($tmpName, $name);
+                // Если файл загружен успешно, перемещаем его из временной директории в конечную
+                move_uploaded_file($tmpName, $name);
+            }
         }
         header('Location: /?path=' . $path);
     }

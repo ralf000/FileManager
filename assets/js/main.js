@@ -104,6 +104,33 @@ function sendFileDeleteAjax(t, id, path) {
     });
 }
 
+function createThumbnails() {
+    var canvases = $('.thumbnail');
+    $.each(canvases, function (id, canvas) {
+        var ctx = canvas.getContext("2d");
+
+        var img = new Image();
+        img.onload = function () {
+
+            canvas.height = canvas.width * (img.height / img.width);
+
+            var oc = document.createElement('canvas'),
+                octx = oc.getContext('2d');
+
+            oc.width = img.width * 0.2;
+            oc.height = img.height * 0.2;
+            octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+            octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+
+            ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+                0, 0, canvas.width, canvas.height);
+        };
+        img.src = $(canvas).data('src');
+    });
+}
+
 $(function () {
     addHandlers();
+    createThumbnails();
 });

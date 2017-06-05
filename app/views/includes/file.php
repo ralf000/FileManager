@@ -25,8 +25,14 @@
     </div>
     <div class="panel-body">
         <div class="icon">
-        <a class="center-block" href="?path=<?= htmlspecialchars($file->getPathname()) ?>"><span
-                    class="glyphicon <?= htmlspecialchars($file->getIcon()) ?> center-block"></span></a>
+            <a class="center-block"
+               href="?path=<?= htmlspecialchars($file->getPathname()) ?>">
+                <?php if ($file instanceof \app\classes\Image): ?>
+                    <canvas class="thumbnail img-responsive center-block" width="300" data-src="<?= htmlspecialchars($file->getPathname()) ?>"></canvas>
+                <?php else: ?>
+                    <span class="glyphicon <?= htmlspecialchars($file->getIcon()) ?> center-block"></span>
+                <?php endif; ?>
+            </a>
         </div>
     </div>
     <div class="panel-footer">

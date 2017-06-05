@@ -14,9 +14,6 @@ abstract class AFile extends \SplFileInfo
     public function download()
     {
         if (file_exists($this->getPathname())) {
-            /*header('X-SendFile: ' . realpath($this->getRealPath()));
-            header('Content-Type: ' . mime_content_type($this->getPathname()));
-            header('Content-Disposition: attachment; filename=' . basename($this->getPathname()));*/
             header('Location: ' . $this->getPathname());
             exit;
         } else {
@@ -73,7 +70,7 @@ abstract class AFile extends \SplFileInfo
 
     protected function checkExtension(string $fileName)
     {
-        $extension = strtolower($this->getExtension());
+        $extension = strtolower(end(explode('.', $fileName)));
         if (!$extension)
             FileException::invalidExtension($fileName);
         $allowExtensions = App::get('config')->get('main.allowExtensions');

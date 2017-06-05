@@ -29,7 +29,7 @@ class FileManager extends AFileComposite
     public function __construct()
     {
         $this->initBasePath();
-        $this->initCurrentPath();
+        $this->initCurrentPath(Request::get('path'));
         $this->initBackLink();
         parent::__construct($this->path);
         $this->setFiles();
@@ -45,20 +45,20 @@ class FileManager extends AFileComposite
         }
         return true;
     }
-    
+
     public function handleFileName(string $name, string $extension = '')
     {
-        if (preg_match('/[а-яА-ЯёЁ]/u', $name)){
+        if (preg_match('/[а-яА-ЯёЁ]/u', $name)) {
             $name = Text::translit($name);
         }
         $name = $this->handleDoubleFileName($name, $extension);
         return $name;
     }
-    
+
 
     /**
      * Обрабатывает имена файлов, который дублируют уже имеющиеся в директории
-     * 
+     *
      * @param string $name
      * @param string $extension
      * @return string
@@ -90,9 +90,8 @@ class FileManager extends AFileComposite
         }
     }
 
-    private function initCurrentPath()
+    private function initCurrentPath($path = '')
     {
-        $path = Request::get('path');
         if ($path) {
             $path = Filter::handlePath($path);
             if (mb_strpos($path, $this->basePath) === false)

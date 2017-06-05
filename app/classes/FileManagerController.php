@@ -49,5 +49,5 @@ class FileManagerController
             return Text::mb_strcasecmp($a->getFilename(), $b->getFilename());
         }
     }
-
+    
 }
