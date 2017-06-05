@@ -11,8 +11,7 @@
                         <input type="hidden" name="path" value="<?= \app\Request::get('path') ?>">
                         <input type="hidden" name="extension" value="<?= $file->getExtension() ?>">
                     <div class="form-group">
-                        <input type="text" name="name" value="<?= $file->getFileNameWithoutExt() ?>"
-                               data-toggle="popover" data-trigger="focus" data-content="Допускается только латиница">
+                        <input type="text" name="name" value="<?= $file->getFileNameWithoutExt() ?>">
                     </div>
                     <?= $file->getExtension() ? '.' . $file->getExtension() : '' ?>
                 </span>

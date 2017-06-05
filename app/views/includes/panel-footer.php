@@ -5,7 +5,7 @@
     <form id="create-folder-form" method="post" class="form-inline pull-left">
         <div class="form-group">
             <input type="hidden" name="command" value="folder-create">
-            <input type="text" class="form-control" name="name" placeholder="Имя директории" data-toggle="popover" data-trigger="focus" data-content="Допускается только латиница">
+            <input type="text" class="form-control" name="name" placeholder="Имя директории">
             <input type="submit"
                    class="btn btn-default form-control"
                    title="Создать новую директорию"

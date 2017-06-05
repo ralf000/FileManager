@@ -1,27 +1,4 @@
-function checkInput(t, e) {
-    var parent = t.parent();
-    if (parent.hasClass('has-error'))
-        parent.removeClass('has-error');
-    var helpBlock = t.next('span.help-block');
-    if (helpBlock.length !== 0)
-        helpBlock.remove();
-    var regexp = /[а-яА-ЯёЁ]/g;
-    if (e.key.search(regexp) !== -1) {
-        var text = t.val().replace(regexp, '');
-        t.val(text);
-        parent.addClass('has-error');
-        t.popover('show');
-        //t.after('<span class="help-block"><small>Допускается только латиница</small></span>');
-    } else {
-        t.popover('destroy');
-        parent.removeClass('has-error');
-    }
-}
-
 function addHandlers() {
-    $('input[name=name]').keyup(function (e) {
-        checkInput($(this), e);
-    });
 
     $('.edit-file-name').on('click', function (e) {
         e.preventDefault();
