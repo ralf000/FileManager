@@ -48,9 +48,7 @@ class FileManager extends AFileComposite
 
     public function handleFileName(string $name, string $extension = '')
     {
-        if (preg_match('/[а-яА-ЯёЁ]/u', $name)) {
-            $name = Text::translit($name);
-        }
+        $name = Text::translit($name);
         $name = $this->handleDoubleFileName($name, $extension);
         return $name;
     }
